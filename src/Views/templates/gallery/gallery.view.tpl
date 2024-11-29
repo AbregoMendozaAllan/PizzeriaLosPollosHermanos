@@ -5,7 +5,7 @@
   justify-content: center;
   text-align: center;
   height: 100vh;
-  background: url('public/imgs/hero/2.jpg') no-repeat center center/cover;
+  background: url('public/imgs/hero/pizzeriahero2.PNG') no-repeat center center/cover;
   color: #ffffff;
   font-family: Arial, sans-serif;
   padding: 0 20px;

@@ -1,1 +1,1 @@
-CREATE SCHEMA `ecommerce` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE SCHEMA `pizzeria` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
