@@ -10,7 +10,6 @@ class Gallery extends PublicController
 {
     public function run(): void
     {
-        
         $pizzasDao = PizzasDao::getPizzas();
         $viewPizzas = [];
         foreach ($pizzasDao as $carro) {

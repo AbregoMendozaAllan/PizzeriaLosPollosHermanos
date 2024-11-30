@@ -128,25 +128,24 @@
     </div>
 
     <!-- Add to Order Button -->
-    <div class="card__footer" style="
-      padding: 16px;
-      margin-top: auto; /* Push footer to the bottom */
-    ">
-      <button class="card__button" style="
+    <div class="card__footer" style="padding: 16px; margin-top: auto;">
+      <a href="index.php?page=Gallery-PizzaDetails&mode=DSP&id={{id}}" style="
+        display: block;
         background-color: #e74c3c;
         color: #ffffff;
+        text-align: center;
+        text-decoration: none;
         border: none;
         border-radius: 4px;
         padding: 10px 20px;
         font-size: 16px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
-        width: 100%; /* Optional: Make button full width */
-      " 
-      onmouseover="this.style.backgroundColor='#c0392b'"
-      onmouseout="this.style.backgroundColor='#e74c3c'">
-        Add to Order
-      </button>
+        transition: background-color 0.3s ease;"
+        onmouseover="this.style.backgroundColor='#c0392b'"
+        onmouseout="this.style.backgroundColor='#e74c3c'">
+        View Details
+      </a>
+    </div>
     </div>
   </div>
 

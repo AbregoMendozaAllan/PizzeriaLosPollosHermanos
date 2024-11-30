@@ -11,4 +11,10 @@ class Pizzas extends Table {
         $pizzas = self::obtenerRegistros($sqlstr, []);
         return $pizzas;
     }
+
+    public static function getPizzaById($codigo) {
+        $sqlstr = 'SELECT * FROM pizzas WHERE id=:id;';
+        $pizza = self::obtenerUnRegistro($sqlstr, ["id"=>$codigo]);
+        return $pizza;
+    }
 }
