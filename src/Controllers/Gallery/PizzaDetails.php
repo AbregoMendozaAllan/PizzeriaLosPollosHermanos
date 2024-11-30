@@ -71,9 +71,9 @@ class pizzaDetails extends PublicController {
         $this->viewData["pizza"] = $this->pizza;
         $this->viewData["pizzaSizes"] = $this->pizzaSizes;
 
-        echo '<pre>';
+        /*echo '<pre>';
         print_r($this->viewData);
-        echo '</pre>';
+        echo '</pre>';*/
     }
     private function loadFormData() {
         $this->pizza["pizza_name"] = $_POST["pizza_name"];

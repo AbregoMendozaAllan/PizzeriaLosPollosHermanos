@@ -21,57 +21,20 @@
     <h3>Select Size</h3>
     <div class="pizza-sizes" style="margin-bottom: 20px;">
       {{with ~pizzaSizes}}
-      {{foreach pizzaSizes}}
+      {{foreach ~pizzaSizes}}
       <div class="size-option" style="margin-bottom: 10px; text-align: left;">
-        <input
-          type="radio"
-          id="size_{{size.size_id}}"
-          name="pizza_size"
-          value="{{size.size_id}}"
-          required
-          style="margin-right: 10px;"
-        />
+        <input type="radio" id="size_{{size_id}}" name="pizza_size" value="{{size_id}}" required
+          style="margin-right: 10px;" />
         <label for="size_{{size_id}}" style="font-size: 18px; color: #555;">
           {{sizeName}} - ${{price}}
         </label>
       </div>
-      {{endfor pizzaSizes}}
+      {{endfor ~pizzaSizes}}
       {{endwith ~pizzaSizes}}
     </div>
-
     <!-- Submit Button -->
     <button type="submit">Order Now</button>
   </form>
 </div>
+
 {{endwith pizza}}
-<form method="POST" action="/order">
-    <h3>Select Size</h3>
-    <div class="pizza-sizes" style="margin-bottom: 20px;">
-      {{with pizzaSizes}}
-      {{foreach pizzaSizes}}
-      <div class="size-option" style="margin-bottom: 10px; text-align: left;">
-        <input
-          type="radio"
-          id="size_{{size.size_id}}"
-          name="pizza_size"
-          value="{{size.size_id}}"
-          required
-          style="margin-right: 10px;"
-        />
-        <label for="size_{{size_id}}" style="font-size: 18px; color: #555;">
-          {{sizeName}} - ${{price}}
-        </label>
-      </div>
-      {{endfor pizzaSizes}}
-      {{endwith pizzaSizes}}
-    </div>
-
-    <!-- Submit Button -->
-    <button type="submit">Order Now</button>
-  </form>
-{{with pizzaSizes}}
-<h1>{{sizeName}}</h1>
-{{foreach pizzaSizes}}
-
-{{endfor pizzaSizes}}
-{{endwith pizzaSizes}}
