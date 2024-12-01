@@ -6,52 +6,80 @@ use Dao\Table;
 
 class Carretilla extends Table
 {
-    // Método para obtener los detalles de una carretilla específica de un usuario específico con estado "pendiente"
-    public static function obtenerDetallesCarretilla($usercod, $carretilla_id)
+    // Obtener todos los registros de la tabla `cart`
+    public static function getAllCarts()
     {
-        $sqlstr = 'SELECT 
-                        c.carretilla_id,
-                        u.username AS usuario,
-                        p.pizza_name AS pizza,
-                        ps.size AS tamano,
-                        dc.quantity AS cantidad,
-                        dc.precio_unitario,
-                        (dc.quantity * dc.precio_unitario) AS total
-                   FROM 
-                        carretilla c
-                   JOIN 
-                        usuario u ON c.usercod = u.usercod
-                   JOIN 
-                        detalle_carrito dc ON c.carretilla_id = dc.carretilla_id
-                   JOIN 
-                        pizzas p ON dc.pizza_id = p.id
-                   JOIN 
-                        pizza_sizes ps ON dc.size_id = ps.id
-                   WHERE 
-                        c.estado = "pendiente"
-                        AND c.usercod = :usercod
-                        AND c.carretilla_id = :carretilla_id;';
-        $params = ["usercod" => $usercod, "carretilla_id" => $carretilla_id];
-        return self::obtenerRegistros($sqlstr, $params);
+        $sqlstr = "SELECT * FROM cart;";
+        return self::obtenerRegistros($sqlstr, []);
     }
 
-    // Método para insertar un nuevo carrito
-    public static function agregarCarretilla($carretilla)
+    // Obtener un registro de la tabla `cart` por ID
+    public static function getCartById($cartId)
     {
-        unset($carretilla['carretilla_id']); // Eliminar el ID si está presente, ya que es autogenerado
-        unset($carretilla['added_at']);      // Fecha se generará automáticamente
-        $sqlstr = 'INSERT INTO carretilla (usercod, estado, added_at)
-                   VALUES (:usercod, :estado, NOW());';
-        return self::executeNonQuery($sqlstr, $carretilla);
+        $sqlstr = "SELECT * FROM cart WHERE cart_id = :cart_id;";
+        return self::obtenerUnRegistro($sqlstr, ["cart_id" => $cartId]);
     }
 
-    // Método para insertar un nuevo detalle en el carrito
-    public static function agregarDetalleCarrito($detalle)
+    // Insertar un nuevo registro en la tabla `cart`
+    public static function insertCart($userCod)
     {
-        unset($detalle['detalle_id']); // Eliminar el ID si está presente, ya que es autogenerado
-        $sqlstr = 'INSERT INTO detalle_carrito 
-                   (carretilla_id, pizza_id, size_id, quantity, precio_unitario)
-                   VALUES (:carretilla_id, :pizza_id, :size_id, :quantity, :precio_unitario);';
-        return self::executeNonQuery($sqlstr, $detalle);
+        $sqlstr = "INSERT INTO cart (usercod) VALUES (:usercod);";
+        return self::executeNonQuery($sqlstr, ["usercod" => $userCod]);
+    }
+
+    // Eliminar un registro de la tabla `cart` por ID
+    public static function deleteCart($cartId)
+    {
+        $sqlstr = "DELETE FROM cart WHERE cart_id = :cart_id;";
+        return self::executeNonQuery($sqlstr, ["cart_id" => $cartId]);
+    }
+
+    // Obtener todos los registros de la tabla `cart_items` por ID de carrito
+    public static function getCartItemsByCartId($cartId)
+    {
+        $sqlstr = "SELECT * FROM cart_items WHERE cart_id = :cart_id;";
+        return self::obtenerRegistros($sqlstr, ["cart_id" => $cartId]);
+    }
+
+    //da el parametro del codigo del usuario
+    public static function getCartByUserCod($userCod)
+    {
+        $sqlstr = "SELECT * FROM cart WHERE usercod = :usercod LIMIT 1;";
+        return self::obtenerUnRegistro($sqlstr, ["usercod" => $userCod]);
+    }
+
+    // Insertar un nuevo item en la tabla `cart_items`
+    public static function insertCartItem($cartId, $pizzaId, $sizeId, $quantity, $price)
+    {
+        $sqlstr = "INSERT INTO cart_items (cart_id, pizza_id, size_id, quantity, price)
+                   VALUES (:cart_id, :pizza_id, :size_id, :quantity, :price);";
+        return self::executeNonQuery($sqlstr, [
+            "cart_id" => $cartId,
+            "pizza_id" => $pizzaId,
+            "size_id" => $sizeId,
+            "quantity" => $quantity,
+            "price" => $price
+        ]);
+    }
+
+    // Actualizar la cantidad y precio de un item en la tabla `cart_items`
+    public static function updateCartItem($itemId, $quantity, $price)
+    {
+        $sqlstr = "UPDATE cart_items
+                   SET quantity = :quantity, price = :price
+                   WHERE item_id = :item_id;";
+        return self::executeNonQuery($sqlstr, [
+            "item_id" => $itemId,
+            "quantity" => $quantity,
+            "price" => $price
+        ]);
+    }
+
+    // Eliminar un item de la tabla `cart_items`
+    public static function deleteCartItem($itemId)
+    {
+        $sqlstr = "DELETE FROM cart_items WHERE item_id = :item_id;";
+        return self::executeNonQuery($sqlstr, ["item_id" => $itemId]);
     }
 }
+?>
