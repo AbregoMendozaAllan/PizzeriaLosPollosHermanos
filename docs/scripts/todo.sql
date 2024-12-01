@@ -75,44 +75,85 @@ CREATE TABLE
         PRIMARY KEY (`bitacoracod`)
     ) ENGINE = InnoDB AUTO_INCREMENT = 10 DEFAULT CHARSET = utf8;
 
-    INSERT INTO usuario 
-    (useremail, username, userpswd, userfching, userpswdest, userpswdexp, userest, useractcod, userpswdchg, usertipo)
-VALUES 
-    ('user@example.com', 'Test User', 'password123', NOW(), 'YES', NOW(), 'ACT', 'activation_code', 'password_change_code', 'NOR'),
-    ('consultant@example.com', 'Consultant User', 'password456', NOW(), 'YES', NOW(), 'ACT', 'activation_code', 'password_change_code', 'CON'),
-    ('client@example.com', 'Client User', 'password789', NOW(), 'YES', NOW(), 'ACT', 'activation_code', 'password_change_code', 'CLI');
+    CREATE TABLE pizzas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pizza_name VARCHAR(100) NOT NULL,
+    ingredients TEXT,
+    description TEXT,
+    image_url VARCHAR(255)
+);
 
+CREATE TABLE pizza_sizes (
+    id CHAR(2) PRIMARY KEY, 
+    size VARCHAR(20)
+);
 
-INSERT INTO roles (rolescod, rolesdsc, rolesest)
-VALUES
-    ('ADMIN', 'Administrator Role', 'ACT'),
-    ('USER', 'Regular User Role', 'ACT'),
-    ('MOD', 'Moderator Role', 'ACT');
+CREATE TABLE pizza_size_mapping (
+    pizza_id INT,
+    size_id CHAR(2),
+    price DECIMAL(10,2),
+    PRIMARY KEY (pizza_id, size_id),
+    FOREIGN KEY (pizza_id) REFERENCES pizzas(id),
+    FOREIGN KEY (size_id) REFERENCES pizza_sizes(id)
+);
 
+-- Table for Registered Users' Cart
+CREATE TABLE cart (
+    cart_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    usercod BIGINT(10) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usercod) REFERENCES usuario(usercod)
+);
 
-INSERT INTO roles_usuarios (usercod, rolescod, roleuserest, roleuserfch, roleuserexp)
-VALUES
-    (1, 'ADMIN', 'ACT', NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR)),  -- User 1 as ADMIN
-    (2, 'USER', 'ACT', NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR)),   -- User 2 as regular USER
-    (3, 'MOD', 'ACT', NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR));    -- User 3 as MODERATOR
+-- Table for Anonymous Users' Cart
+CREATE TABLE cart_anon (
+    cart_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    anoncod VARCHAR(128) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
+-- Table for Registered Users' Cart Items
+CREATE TABLE cart_items (
+    item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    cart_id BIGINT NOT NULL,
+    pizza_id INT NOT NULL,
+    size_id CHAR(2) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cart_id) REFERENCES cart(cart_id),
+    FOREIGN KEY (pizza_id, size_id) REFERENCES pizza_size_mapping(pizza_id, size_id)
+);
 
-INSERT INTO funciones (fncod, fndsc, fnest, fntyp)
-VALUES
-    ('VIEW', 'View Access', 'ACT', 'REG'),
-    ('EDIT', 'Edit Access', 'ACT', 'MOD'),
-    ('DELETE', 'Delete Access', 'ACT', 'ADM');
+-- Table for Anonymous Users' Cart Items
+CREATE TABLE cart_items_anon (
+    item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    cart_id BIGINT NOT NULL,
+    pizza_id INT NOT NULL,
+    size_id CHAR(2) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cart_id) REFERENCES cart_anon(cart_id),
+    FOREIGN KEY (pizza_id, size_id) REFERENCES pizza_size_mapping(pizza_id, size_id)
+);
 
+CREATE TABLE transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usercod BIGINT(10),
+    transaction_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    total_amount DECIMAL(10,2),
+    FOREIGN KEY (usercod) REFERENCES usuario(usercod)
+);
 
-INSERT INTO funciones_roles (rolescod, fncod, fnrolest, fnexp)
-VALUES
-    ('ADMIN', 'VIEW', 'ACT', DATE_ADD(NOW(), INTERVAL 1 YEAR)),
-    ('USER', 'VIEW', 'ACT', DATE_ADD(NOW(), INTERVAL 1 YEAR)),
-    ('MOD', 'EDIT', 'ACT', DATE_ADD(NOW(), INTERVAL 1 YEAR)),
-    ('ADMIN', 'DELETE', 'ACT', DATE_ADD(NOW(), INTERVAL 1 YEAR));
-
-INSERT INTO bitacora (bitacorafch, bitprograma, bitdescripcion, bitobservacion, bitTipo, bitusuario)
-VALUES
-    (NOW(), 'System', 'User login attempt', 'Successful login for user 1', 'INF', 1),
-    (NOW(), 'System', 'Password Change', 'User 2 changed their password', 'INF', 2),
-    (NOW(), 'Admin Panel', 'Role assignment', 'Assigned MOD role to user3','ADM',3);
+CREATE TABLE transaction_details (
+    transaction_id INT,
+    pizza_id INT,
+    size_id CHAR(2),
+    quantity INT,
+    price DECIMAL(10, 2),
+    PRIMARY KEY (transaction_id, pizza_id, size_id),
+    FOREIGN KEY (transaction_id) REFERENCES transactions(id),
+    FOREIGN KEY (pizza_id) REFERENCES pizza_size_mapping(pizza_id),
+    FOREIGN KEY (size_id) REFERENCES pizza_size_mapping(size_id)
+);
