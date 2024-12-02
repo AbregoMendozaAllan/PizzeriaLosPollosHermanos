@@ -20,12 +20,7 @@ class Carretilla extends PublicController
         ];
 
         // Llama a la nueva función para cargar los items del carrito
-        $this->loadCartItems($viewData);
-
-        echo '<pre>';
-        print_r($viewData);
-        echo '</pre>';
-
+        $this->loadCartItems2($viewData);
         Renderer::render('carretilla/carretilla', $viewData);
     }
 
@@ -52,4 +47,17 @@ class Carretilla extends PublicController
             $viewData['cartItems'] = [];
         }
     }
+
+    private function loadCartItems2(array &$viewData): void
+{
+    if (!empty($viewData['carretilla'])) {
+        $cart = $viewData['carretilla'][0];
+        $cartId = $cart['cart_id'];
+        $cartItems = CarretillaDao::getCartItems($cartId);
+        $viewData['cartItems'] = $cartItems;
+    } else {
+        $viewData['cartItems'] = [];
+    }
+}
+
 }
