@@ -74,3 +74,46 @@ CREATE TABLE
         `bitusuario` bigint(18) DEFAULT NULL,
         PRIMARY KEY (`bitacoracod`)
     ) ENGINE = InnoDB AUTO_INCREMENT = 10 DEFAULT CHARSET = utf8;
+
+
+INSERT INTO `usuario` 
+    (useremail, username, userpswd, userfching, userpswdest, userpswdexp, userest, useractcod, userpswdchg, usertipo)
+VALUES 
+    ('user@example.com', 'Test User', 'password123', NOW(), 'YES', NOW(), 'ACT', 'activation_code', 'password_change_code', 'NOR'),
+    ('consultant@example.com', 'Consultant User', 'password456', NOW(), 'YES', NOW(), 'ACT', 'activation_code', 'password_change_code', 'CON'),
+    ('client@example.com', 'Client User', 'password789', NOW(), 'YES', NOW(), 'ACT', 'activation_code', 'password_change_code', 'CLI');
+
+
+INSERT INTO `roles` (rolescod, rolesdsc, rolesest)
+VALUES
+    ('ADMIN', 'Administrator Role', 'ACT'),
+    ('USER', 'Regular User Role', 'ACT'),
+    ('MOD', 'Moderator Role', 'ACT');
+
+
+INSERT INTO `roles_usuarios` (usercod, rolescod, roleuserest, roleuserfch, roleuserexp)
+VALUES
+    (1, 'ADMIN', 'ACT', NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR)),  -- User 1 as ADMIN
+    (2, 'USER', 'ACT', NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR)),   -- User 2 as regular USER
+    (3, 'MOD', 'ACT', NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR));    -- User 3 as MODERATOR
+
+
+INSERT INTO `funciones` (fncod, fndsc, fnest, fntyp)
+VALUES
+    ('VIEW', 'View Access', 'ACT', 'REG'),
+    ('EDIT', 'Edit Access', 'ACT', 'MOD'),
+    ('DELETE', 'Delete Access', 'ACT', 'ADM');
+
+
+INSERT INTO `funciones_roles` (rolescod, fncod, fnrolest, fnexp)
+VALUES
+    ('ADMIN', 'VIEW', 'ACT', DATE_ADD(NOW(), INTERVAL 1 YEAR)),
+    ('USER', 'VIEW', 'ACT', DATE_ADD(NOW(), INTERVAL 1 YEAR)),
+    ('MOD', 'EDIT', 'ACT', DATE_ADD(NOW(), INTERVAL 1 YEAR)),
+    ('ADMIN', 'DELETE', 'ACT', DATE_ADD(NOW(), INTERVAL 1 YEAR));
+
+INSERT INTO `bitacora` (bitacorafch, bitprograma, bitdescripcion, bitobservacion, bitTipo, bitusuario)
+VALUES
+    (NOW(), 'System', 'User login attempt', 'Successful login for user 1', 'INF', 1),
+    (NOW(), 'System', 'Password Change', 'User 2 changed their password', 'INF', 2),
+    (NOW(), 'Admin Panel', 'Role assignment', 'Assigned MOD role to user 3', 'ADM', 3);

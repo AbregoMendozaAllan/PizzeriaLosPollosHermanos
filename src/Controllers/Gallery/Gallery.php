@@ -4,7 +4,7 @@ namespace Controllers\Gallery;
 
 use Controllers\PublicController;
 use Views\Renderer;
-use \Dao\Pizzas\Pizzas as PizzasDao;
+use Dao\Pizzas\Pizzas as PizzasDao;
 
 class Gallery extends PublicController
 {
@@ -12,8 +12,8 @@ class Gallery extends PublicController
     {
         $pizzasDao = PizzasDao::getPizzas();
         $viewPizzas = [];
-        foreach ($pizzasDao as $carro) {
-            $viewPizzas[] = $carro;
+        foreach ($pizzasDao as $pizza) {
+            $viewPizzas[] = $pizza;
         }
         $viewData = [
             'pizzas' => $viewPizzas
