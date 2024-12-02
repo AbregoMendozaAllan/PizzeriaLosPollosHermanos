@@ -5,6 +5,7 @@
     <span class="pizza-cantidad">Cantidad</span>
     <span class="pizza-precio">Precio</span>
   </li>
+  <!-- Aquí se llenará dinámicamente la lista de items -->
   {{foreach cartItems}}
     <li class="carrito-item" data-item-id="{{pizza_id}}">
       <div class="item-info">
@@ -48,52 +49,72 @@
 </button>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
+  const actualizarTotal = () => {
     const carritoItems = document.querySelectorAll('.carrito-item');
-    const precioTotalElement = document.getElementById('precio-total');
-
-    const actualizarTotal = () => {
-      let total = 0;
-      carritoItems.forEach(item => {
-        const cantidad = parseInt(item.querySelector('.pizza-cantidad').textContent);
-        const precio = parseFloat(item.querySelector('.precio-unitario').getAttribute('data-precio'));
-        if (!isNaN(cantidad) && !isNaN(precio)) {
-          const itemTotal = cantidad * precio;
-          total += itemTotal;
-          item.querySelector('.pizza-precio .precio-unitario').textContent = itemTotal.toFixed(2);
-        }
-      });
-      precioTotalElement.textContent = total.toFixed(2);
-    };
-
-   
+    let subtotal = 0;
+    let impuesto = 0;
+    let flete = 0; 
+    let descuento = 0; 
+    let cupon = 0; 
 
     carritoItems.forEach(item => {
-      const pizzaId = item.getAttribute('data-item-id');
-      const btnSumar = item.querySelector(`.btn-sumar[data-item="${pizzaId}"]`);
-      const btnRestar = item.querySelector(`.btn-restar[data-item="${pizzaId}"]`);
-      const cantidadElement = item.querySelector(`#cantidad-${pizzaId}`);
+      const cantidadElement = item.querySelector('.pizza-cantidad');
+      const precioElement = item.querySelector('.precio-unitario');
 
-      if (btnSumar && btnRestar && cantidadElement) {
-        btnSumar.addEventListener('click', () => {
-          let cantidad = parseInt(cantidadElement.textContent);
-          cantidad++;
-          cantidadElement.textContent = cantidad;
-          
-        });
+      if (cantidadElement && precioElement) {
+        const cantidad = parseInt(cantidadElement.textContent);
+        const precio = parseFloat(precioElement.getAttribute('data-precio'));
 
-        btnRestar.addEventListener('click', () => {
-          let cantidad = parseInt(cantidadElement.textContent);
-          if (cantidad > 0) {
-            cantidad--;
-            cantidadElement.textContent = cantidad;
-            
-          }
-        });
+        if (!isNaN(cantidad) && !isNaN(precio)) {
+          const itemTotal = cantidad * precio;
+          subtotal += itemTotal;
+
+          precioElement.textContent = itemTotal.toFixed(2);
+        }
       }
     });
+
+    impuesto = subtotal * 0.15;
+    const total = subtotal + impuesto + flete - descuento - cupon;
+
+    document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+    document.getElementById('impuesto').textContent = impuesto.toFixed(2);
+    document.getElementById('flete').textContent = flete.toFixed(2);
+    document.getElementById('descuento').textContent = descuento.toFixed(2);
+    document.getElementById('cupon').textContent = cupon.toFixed(2);
+    document.getElementById('precio-total').textContent = total.toFixed(2);
+  };
+
+  document.querySelectorAll('.carrito-item').forEach(item => {
+    const pizzaId = item.getAttribute('data-item-id');
+    const btnSumar = item.querySelector(`.btn-sumar[data-item="${pizzaId}"]`);
+    const btnRestar = item.querySelector(`.btn-restar[data-item="${pizzaId}"]`);
+    const cantidadElement = item.querySelector(`#cantidad-${pizzaId}`);
+
+    if (btnSumar && btnRestar && cantidadElement) {
+      btnSumar.addEventListener('click', () => {
+        let cantidad = parseInt(cantidadElement.textContent);
+        cantidad++;
+        cantidadElement.textContent = cantidad;
+        actualizarTotal();
+      });
+
+      btnRestar.addEventListener('click', () => {
+        let cantidad = parseInt(cantidadElement.textContent);
+        if (cantidad > 0) {
+          cantidad--;
+          cantidadElement.textContent = cantidad;
+          actualizarTotal();
+        }
+      });
+    }
   });
+
+  actualizarTotal();
+});
 </script>
+
 
 
 
