@@ -7,14 +7,14 @@
   </li>
   <!-- Aquí se llenará dinámicamente la lista de items -->
   {{foreach cartItems}}
-    <li class="carrito-item" data-item-id="{{pizza_id}}">
+    <li class="carrito-item" data-item-id="{{item_id}}">
       <div class="item-info">
         <span class="pizza-nombre">{{pizza_name}}</span>
         <span class="pizza-tamano">{{size}}</span>
         <div class="cantidad-controles">
-          <button class="btn-restar" data-item="{{pizza_id}}" data-precio="{{price}}">-</button>
-          <span class="pizza-cantidad" id="cantidad-{{pizza_id}}">1</span>
-          <button class="btn-sumar" data-item="{{pizza_id}}" data-precio="{{price}}">+</button>
+          <button class="btn-restar" data-item="{{item_id}}" data-precio="{{price}}">-</button>
+          <span class="pizza-cantidad" id="cantidad-{{item_id}}">1</span>
+          <button class="btn-sumar" data-item="{{item_id}}" data-precio="{{price}}">+</button>
         </div>
         <span class="pizza-precio">L. <span class="precio-unitario" data-precio="{{price}}">{{price}}</span></span>
       </div>
@@ -49,76 +49,105 @@
 </button>
 
 <script>
- document.addEventListener('DOMContentLoaded', () => {
-  const actualizarTotal = () => {
-    const carritoItems = document.querySelectorAll('.carrito-item');
-    let subtotal = 0;
-    let impuesto = 0;
-    let flete = 0; 
-    let descuento = 0; 
-    let cupon = 0; 
+  document.addEventListener('DOMContentLoaded', () => {
+    const actualizarTotal = () => {
+      const carritoItems = document.querySelectorAll('.carrito-item');
+      let subtotal = 0;
+      let impuesto = 0;
+      let flete = 0; 
+      let descuento = 0; 
+      let cupon = 0; 
 
-    carritoItems.forEach(item => {
-      const cantidadElement = item.querySelector('.pizza-cantidad');
-      const precioElement = item.querySelector('.precio-unitario');
+      carritoItems.forEach(item => {
+        const cantidadElement = item.querySelector('.pizza-cantidad');
+        const precioElement = item.querySelector('.precio-unitario');
 
-      if (cantidadElement && precioElement) {
-        const cantidad = parseInt(cantidadElement.textContent);
-        const precio = parseFloat(precioElement.getAttribute('data-precio'));
+        if (cantidadElement && precioElement) {
+          const cantidad = parseInt(cantidadElement.textContent);
+          const precio = parseFloat(precioElement.getAttribute('data-precio'));
 
-        if (!isNaN(cantidad) && !isNaN(precio)) {
-          const itemTotal = cantidad * precio;
-          subtotal += itemTotal;
+          if (!isNaN(cantidad) && !isNaN(precio)) {
+            const itemTotal = cantidad * precio;
+            subtotal += itemTotal;
 
-          precioElement.textContent = itemTotal.toFixed(2);
+            precioElement.textContent = itemTotal.toFixed(2);
+          }
         }
+      });
+
+      impuesto = subtotal * 0.15;
+      const total = subtotal + impuesto + flete - descuento - cupon;
+
+      document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+      document.getElementById('impuesto').textContent = impuesto.toFixed(2);
+      document.getElementById('flete').textContent = flete.toFixed(2);
+      document.getElementById('descuento').textContent = descuento.toFixed(2);
+      document.getElementById('cupon').textContent = cupon.toFixed(2);
+      document.getElementById('precio-total').textContent = total.toFixed(2);
+    };
+
+    document.querySelectorAll('.carrito-item').forEach(item => {
+      const itemId = item.getAttribute('data-item-id');
+      const btnSumar = item.querySelector(`.btn-sumar[data-item="${itemId}"]`);
+      const btnRestar = item.querySelector(`.btn-restar[data-item="${itemId}"]`);
+      const cantidadElement = item.querySelector(`#cantidad-${itemId}`);
+
+      if (btnSumar && btnRestar && cantidadElement) {
+        btnSumar.addEventListener('click', () => {
+          let cantidad = parseInt(cantidadElement.textContent);
+          cantidad++;
+          cantidadElement.textContent = cantidad;
+          actualizarTotal();
+        });
+
+        btnRestar.addEventListener('click', () => {
+          let cantidad = parseInt(cantidadElement.textContent);
+          if (cantidad > 0) {
+            cantidad--;
+            cantidadElement.textContent = cantidad;
+            if (cantidad === 0) {
+              eliminarItem(itemId, item);
+            } else {
+              actualizarTotal();
+            }
+          }
+        });
       }
     });
 
-    impuesto = subtotal * 0.15;
-    const total = subtotal + impuesto + flete - descuento - cupon;
-
-    document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-    document.getElementById('impuesto').textContent = impuesto.toFixed(2);
-    document.getElementById('flete').textContent = flete.toFixed(2);
-    document.getElementById('descuento').textContent = descuento.toFixed(2);
-    document.getElementById('cupon').textContent = cupon.toFixed(2);
-    document.getElementById('precio-total').textContent = total.toFixed(2);
-  };
-
-  document.querySelectorAll('.carrito-item').forEach(item => {
-    const pizzaId = item.getAttribute('data-item-id');
-    const btnSumar = item.querySelector(`.btn-sumar[data-item="${pizzaId}"]`);
-    const btnRestar = item.querySelector(`.btn-restar[data-item="${pizzaId}"]`);
-    const cantidadElement = item.querySelector(`#cantidad-${pizzaId}`);
-
-    if (btnSumar && btnRestar && cantidadElement) {
-      btnSumar.addEventListener('click', () => {
-        let cantidad = parseInt(cantidadElement.textContent);
-        cantidad++;
-        cantidadElement.textContent = cantidad;
-        actualizarTotal();
-      });
-
-      btnRestar.addEventListener('click', () => {
-        let cantidad = parseInt(cantidadElement.textContent);
-        if (cantidad > 0) {
-          cantidad--;
-          cantidadElement.textContent = cantidad;
-          actualizarTotal();
+    const eliminarItem = (itemId, itemElement) => {
+      fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          'action': 'delete',
+          'item_id': itemId
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          location.reload();
+        } else {
+          alert('Error al eliminar el item: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al procesar la solicitud: ' + error.message);
       });
-    }
+    };
+
+    actualizarTotal();
   });
-
-  actualizarTotal();
-});
 </script>
-
-
-
-
-
 
 <style>
 

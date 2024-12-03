@@ -43,7 +43,7 @@ class Carretilla extends Table
 
    public static function getCartItems($cartId)
    {
-       $sqlstr = "SELECT  c.pizza_id, p.pizza_name, s.size ,c.quantity,  c.price 
+       $sqlstr = "SELECT  c.item_id, c.pizza_id, p.pizza_name, s.size ,c.quantity,  c.price 
                   FROM pizzas as p 
                   INNER JOIN cart_items as c ON c.pizza_id = p.id 
                   INNER JOIN pizza_sizes as s ON c.size_id = s.id 
