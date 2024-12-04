@@ -46,18 +46,6 @@ class Carretilla extends PublicController
         Renderer::render('carretilla/carretilla', $viewData);
     }
 
-    private function loadCartItems(array &$viewData): void
-    {
-        if (!empty($viewData['carretilla'])) {
-            $cart = $viewData['carretilla'][0];
-            $cartId = $cart['cart_id'];
-            $cartItems = CarretillaDao::getCartItemsByCartId($cartId);
-            $viewData['cartItems'] = $cartItems;
-        } else {
-            $viewData['cartItems'] = [];
-        }
-    }
-
     private function loadCartItems2(array &$viewData): void
     {
         if (!empty($viewData['carretilla'])) {
