@@ -86,34 +86,60 @@
       document.getElementById('precio-total').textContent = total.toFixed(2);
     };
 
-    document.querySelectorAll('.carrito-item').forEach(item => {
-      const itemId = item.getAttribute('data-item-id');
-      const btnSumar = item.querySelector(`.btn-sumar[data-item="${itemId}"]`);
-      const btnRestar = item.querySelector(`.btn-restar[data-item="${itemId}"]`);
-      const cantidadElement = item.querySelector(`#cantidad-${itemId}`);
+    const btnPagar = document.querySelector('.Btn');
+    if (btnPagar) {
+      btnPagar.addEventListener('click', () => {
+        const carritoItems = document.querySelectorAll('.carrito-item');
+        carritoItems.forEach(item => {
+          const itemId = item.getAttribute('data-item-id');
+          const cantidadElement = item.querySelector(`#cantidad-${itemId}`);
+          const precioElement = item.querySelector('.precio-unitario');
 
-      if (btnSumar && btnRestar && cantidadElement) {
-        btnSumar.addEventListener('click', () => {
-          let cantidad = parseInt(cantidadElement.textContent);
-          cantidad++;
-          cantidadElement.textContent = cantidad;
-          actualizarTotal();
-        });
+          if (cantidadElement && precioElement) {
+            const cantidad = parseInt(cantidadElement.textContent);
+            const precio = parseFloat(precioElement.getAttribute('data-precio'));
 
-        btnRestar.addEventListener('click', () => {
-          let cantidad = parseInt(cantidadElement.textContent);
-          if (cantidad > 0) {
-            cantidad--;
-            cantidadElement.textContent = cantidad;
-            if (cantidad === 0) {
-              eliminarItem(itemId, item);
-            } else {
-              actualizarTotal();
+            if (!isNaN(cantidad) && !isNaN(precio)) {
+             
+              actualizarCantidad(itemId, cantidad, precio);
             }
           }
         });
-      }
-    });
+      });
+    }
+
+    const actualizarCantidad = (itemId, quantity, price) => {
+      fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          'action': 'update',
+          'item_id': itemId,
+          'quantity': quantity,
+          'price': price
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (!data.success) {
+          alert('Error al actualizar el item: ' + data.message);
+        } else {
+          
+          location.reload();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al procesar la solicitud: ' + error.message);
+      });
+    };
 
     const eliminarItem = (itemId, itemElement) => {
       fetch(window.location.href, {
@@ -145,9 +171,40 @@
       });
     };
 
+    document.querySelectorAll('.carrito-item').forEach(item => {
+      const itemId = item.getAttribute('data-item-id');
+      const btnSumar = item.querySelector(`.btn-sumar[data-item="${itemId}"]`);
+      const btnRestar = item.querySelector(`.btn-restar[data-item="${itemId}"]`);
+      const cantidadElement = item.querySelector(`#cantidad-${itemId}`);
+
+      if (btnSumar && btnRestar && cantidadElement) {
+        btnSumar.addEventListener('click', () => {
+          let cantidad = parseInt(cantidadElement.textContent);
+          cantidad++;
+          cantidadElement.textContent = cantidad;
+          actualizarTotal();
+        });
+
+        btnRestar.addEventListener('click', () => {
+          let cantidad = parseInt(cantidadElement.textContent);
+          if (cantidad > 0) {
+            cantidad--;
+            cantidadElement.textContent = cantidad;
+            if (cantidad === 0) {
+              eliminarItem(itemId, item);
+            } else {
+              actualizarTotal();
+            }
+          }
+        });
+      }
+    });
+
     actualizarTotal();
   });
 </script>
+
+
 
 <style>
 
