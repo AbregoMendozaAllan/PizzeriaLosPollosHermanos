@@ -2,13 +2,14 @@
 
 namespace Controllers\Gallery;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
 use Views\Renderer;
 use Utilities\Site;
 use Dao\Pizzas\Pizzas as PizzasDao;
 use Dao\Pizzas\SizesPerPizzas as SizesPerPizzasDao;
+use Dao\Carretilla\Carretilla as CarretillaDao;
 
-class pizzaDetails extends PublicController {
+class pizzaDetails extends PrivateController {
     private $viewData = [];
     private $modeDscArr = [
         "INS" => "Add to Cart",
@@ -81,4 +82,16 @@ class pizzaDetails extends PublicController {
         $this->pizza["description"] = $_POST["description"];
         $this->pizza["image_url"] = $_POST["image_url"];
     }
+    /*private function onAction() {
+        switch ($this->mode) {
+            case 'INS':
+                $result = CarretillaDao::insertPizza($this->)
+                # code...
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }*/
 }
