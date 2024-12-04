@@ -105,8 +105,8 @@ class Users extends PublicController
             $this->usersCount,
             $this->itemsPerPage,
             $this->pageNumber,
-            "index.php?page=Usuarios_Usuarios",
-            "Usuarios_Usuarios"
+            "index.php?page=Users_Users",
+            "Users_Users"
         );
         $this->viewData["pagination"] = $pagination;
     }
