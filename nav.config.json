@@ -9,6 +9,11 @@
       "id": "Menu_SignUp",
       "nav_url": "index.php?page=Sec_Register",
       "nav_label":"<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Crear Cuenta"
+    },
+    {
+      "id": "Menu_SignUp",
+      "nav_url": "index.php?page=Carretilla_Carretilla",
+      "nav_label":"<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Crear Cuenta"
     }
   ],
   "private": [

@@ -1,5 +1,4 @@
 <?php
-
 namespace Controllers\Carretilla;
 
 use Controllers\PublicController;
@@ -10,45 +9,51 @@ class Carretilla extends PublicController
 {
     public function run(): void
     {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            header('Content-Type: application/json');
+            try {
+                if (isset($_POST['action'])) {
+                    if ($_POST['action'] === 'delete' && isset($_POST['item_id'])) {
+                        $itemId = $_POST['item_id'];
+                        $result = CarretillaDao::deleteCartItem($itemId);
+                        echo json_encode(['success' => $result]);
+                    } elseif ($_POST['action'] === 'update' && isset($_POST['item_id'], $_POST['quantity'], $_POST['price'])) {
+                        $itemId = $_POST['item_id'];
+                        $quantity = $_POST['quantity'];
+                        $price = $_POST['price'];
+                        $result = CarretillaDao::updateCartItem($itemId, $quantity, $price);
+                        echo json_encode(['success' => $result]);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Acción no especificada']);
+                }
+            } catch (\Exception $e) {
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            }
+            exit;
+        }
+
         $carretillaDao = CarretillaDao::getCartByUserCod(1);
         $viewCarretilla = [];
-        if ($carretillaDao) { // Verifica si se encontró un carrito
-            $viewCarretilla[] = $carretillaDao; // Añade el carrito encontrado al arreglo
+        if ($carretillaDao) {
+            $viewCarretilla[] = $carretillaDao;
         }
         $viewData = [
             'carretilla' => $viewCarretilla
         ];
 
-        // Llama a la nueva función para cargar los items del carrito
-        $this->loadCartItems($viewData);
-
-        echo '<pre>';
-        print_r($viewData);
-        echo '</pre>';
-
+        $this->loadCartItems2($viewData);
         Renderer::render('carretilla/carretilla', $viewData);
     }
 
-    /**
-     * Carga los elementos del carrito en base al cart_id del carrito encontrado.
-     *
-     * @param array $viewData La referencia al arreglo de datos de la vista.
-     */
-    private function loadCartItems(array &$viewData): void
+    private function loadCartItems2(array &$viewData): void
     {
-        // Verifica si existe un carrito en viewData
         if (!empty($viewData['carretilla'])) {
-            // Obtiene el primer carrito encontrado
             $cart = $viewData['carretilla'][0];
             $cartId = $cart['cart_id'];
-
-            // Obtiene los items del carrito usando el cartId
-            $cartItems = CarretillaDao::getCartItemsByCartId($cartId);
-
-            // Añade los items del carrito a viewData bajo la llave 'cartItems'
+            $cartItems = CarretillaDao::getCartItems($cartId);
             $viewData['cartItems'] = $cartItems;
         } else {
-            // Si no hay carrito, inicializa cartItems como un arreglo vacío
             $viewData['cartItems'] = [];
         }
     }
