@@ -1,6 +1,9 @@
 -- Table for Registered Users' Cart
 CREATE TABLE cart (
     cart_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+-- Table for Registered Users' Cart
+CREATE TABLE cart (
+    cart_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     usercod BIGINT(10) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usercod) REFERENCES usuario(usercod)
@@ -23,9 +26,14 @@ CREATE TABLE cart_items (
     price DECIMAL(10, 2) NOT NULL,
     added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (cart_id) REFERENCES cart(cart_id),
+    FOREIGN KEY (cart_id) REFERENCES cart(cart_id),
     FOREIGN KEY (pizza_id, size_id) REFERENCES pizza_size_mapping(pizza_id, size_id)
 );
 
+-- Table for Anonymous Users' Cart Items
+CREATE TABLE cart_items_anon (
+    item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    cart_id BIGINT NOT NULL,
 -- Table for Anonymous Users' Cart Items
 CREATE TABLE cart_items_anon (
     item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -35,6 +43,7 @@ CREATE TABLE cart_items_anon (
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cart_id) REFERENCES cart_anon(cart_id),
     FOREIGN KEY (cart_id) REFERENCES cart_anon(cart_id),
     FOREIGN KEY (pizza_id, size_id) REFERENCES pizza_size_mapping(pizza_id, size_id)
 );
