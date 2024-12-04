@@ -4,7 +4,7 @@ namespace Controllers\Checkout;
 
 use Controllers\PublicController;
 
-class Accept extends PublicController
+class Capture extends PublicController
 {
     public function run(): void
     {
@@ -21,6 +21,6 @@ class Accept extends PublicController
         } else {
             $dataview["orderjson"] = "No Order Available!!!";
         }
-        \Views\Renderer::render("paypal/accept", $dataview);
+        \Views\Renderer::render("paypal/capture", $dataview);
     }
 }
