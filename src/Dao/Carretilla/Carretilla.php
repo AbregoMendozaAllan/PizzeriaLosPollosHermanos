@@ -34,29 +34,28 @@ class Carretilla extends Table
         return self::executeNonQuery($sqlstr, ["cart_id" => $cartId]);
     }
 
-   // Obtener todos los registros de la tabla cart_items por ID de carrito
-   public static function getCartItemsByCartId($cartId)
-   {
-       $sqlstr = "SELECT * FROM cart_items WHERE cart_id = :cart_id;";
-       return self::obtenerRegistros($sqlstr, ["cart_id" => $cartId]);
-   }
+    // Obtener todos los registros de la tabla cart_items por ID de carrito
+    public static function getCartItemsByCartId($cartId)
+    {
+        $sqlstr = "SELECT * FROM cart_items WHERE cart_id = :cart_id;";
+        return self::obtenerRegistros($sqlstr, ["cart_id" => $cartId]);
+    }
 
-   public static function getCartItems($cartId)
-   {
-       $sqlstr = "SELECT  c.item_id, c.pizza_id, p.pizza_name, s.size ,c.quantity,  c.price 
-                  FROM pizzas as p 
-                  INNER JOIN cart_items as c ON c.pizza_id = p.id 
-                  INNER JOIN pizza_sizes as s ON c.size_id = s.id 
+    public static function getCartItems($cartId)
+    {
+        $sqlstr = "SELECT  c.item_id, c.pizza_id, p.pizza_name, s.size ,c.quantity,  c.price
+                  FROM pizzas as p
+                  INNER JOIN cart_items as c ON c.pizza_id = p.id
+                  INNER JOIN pizza_sizes as s ON c.size_id = s.id
                   WHERE c.cart_id = :cart_id;";
-       return self::obtenerRegistros($sqlstr, ["cart_id" => $cartId]);
-   }
-   
+        return self::obtenerRegistros($sqlstr, ["cart_id" => $cartId]);
+    }
 
     //da el parametro del codigo del usuario
     public static function getCartByUserCod($userCod)
     {
         $sqlstr = "SELECT * FROM cart WHERE usercod = :usercod LIMIT 1;";
-        return self::obtenerUnRegistro($sqlstr, ["usercod" => $userCod]);
+        return self::obtenerRegistros($sqlstr, ["usercod" => $userCod]);
     }
 
     // Insertar un nuevo item en la tabla `cart_items`
@@ -92,5 +91,18 @@ class Carretilla extends Table
         $sqlstr = "DELETE FROM cart_items WHERE item_id = :item_id;";
         return self::executeNonQuery($sqlstr, ["item_id" => $itemId]);
     }
+
+
+
+    public static function createCart($userID) {
+        $sqlstr = "INSERT INTO cart (usercod, created_at) VALUES (:usercod, :created_at);";
+        
+        $params = [
+            "usercod"    => $userID,
+            "created_at" => date("Y-m-d H:i:s")
+        ];
+        
+        self::executeNonQuery($sqlstr, $params);
+    }
+
 }
-?>

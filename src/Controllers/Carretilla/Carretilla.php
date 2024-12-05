@@ -48,8 +48,12 @@ class Carretilla extends PublicController
             'carretilla' => $viewCarretilla
         ];
 
-        $this->loadCartItems2($viewData);
-        Renderer::render('carretilla/carretilla', $viewData);
+            $this->loadCartItems2($viewData);
+            Renderer::render('carretilla/carretilla', $viewData);
+        } else {
+            \Utilities\Site::redirectTo("index.php?page=Sec_Login");
+
+        }
     }
 
     private function loadCartItems2(array &$viewData): void

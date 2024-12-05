@@ -29,6 +29,9 @@ class Index extends PublicController
      */
     public function run() :void
     {
+        echo "<pre>";
+    print_r($GLOBALS);
+    echo "</pre>";
         $viewData = array();
         \Views\Renderer::render("index", $viewData);
     }
