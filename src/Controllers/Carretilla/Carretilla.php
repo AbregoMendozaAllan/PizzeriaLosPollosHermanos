@@ -35,17 +35,24 @@ class Carretilla extends PrivateController
             exit;
         }
         $userId = \Utilities\Security::getUserId();
-        $carretillaDao = CarretillaDao::getCartByUserCod($userId);
-        $viewCarretilla = [];
-        if ($carretillaDao) {
-            $viewCarretilla[] = $carretillaDao;
-        }
-        $viewData = [
-            'carretilla' => $viewCarretilla
-        ];
 
-        $this->loadCartItems2($viewData);
-        Renderer::render('carretilla/carretilla', $viewData);
+
+        if ($userId > 0) {
+            $carretillaDao = CarretillaDao::getCartByUserCod($userId);
+            $viewCarretilla = [];
+            if ($carretillaDao) {
+                $viewCarretilla[] = $carretillaDao;
+            }
+            $viewData = [
+                'carretilla' => $viewCarretilla
+            ];
+
+            $this->loadCartItems2($viewData);
+            Renderer::render('carretilla/carretilla', $viewData);
+        } else {
+            \Utilities\Site::redirectTo("index.php?page=Sec_Login");
+
+        }
     }
 
     private function loadCartItems2(array &$viewData): void

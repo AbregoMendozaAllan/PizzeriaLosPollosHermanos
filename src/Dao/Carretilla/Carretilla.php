@@ -55,7 +55,7 @@ class Carretilla extends Table
     public static function getCartByUserCod($userCod)
     {
         $sqlstr = "SELECT * FROM cart WHERE usercod = :usercod LIMIT 1;";
-        return self::obtenerUnRegistro($sqlstr, ["usercod" => $userCod]);
+        return self::obtenerRegistros($sqlstr, ["usercod" => $userCod]);
     }
 
     // Insertar un nuevo item en la tabla `cart_items`
@@ -90,6 +90,19 @@ class Carretilla extends Table
     {
         $sqlstr = "DELETE FROM cart_items WHERE item_id = :item_id;";
         return self::executeNonQuery($sqlstr, ["item_id" => $itemId]);
+    }
+
+
+
+    public static function createCart($userID) {
+        $sqlstr = "INSERT INTO cart (usercod, created_at) VALUES (:usercod, :created_at);";
+        
+        $params = [
+            "usercod"    => $userID,
+            "created_at" => date("Y-m-d H:i:s")
+        ];
+        
+        self::executeNonQuery($sqlstr, $params);
     }
 
 }
