@@ -16,6 +16,7 @@ class SizesPerPizzas extends Table
     {
         $sqlstr = '
             SELECT 
+                psm.size_id,
                 ps.size AS sizeName, 
                 psm.price 
             FROM 
@@ -66,4 +67,17 @@ class SizesPerPizzas extends Table
             'size_id' => $sizeId
         ]);
     }
+    public static function getPriceByPizzaIdAndSizeId($pizzaId, $sizeId)
+    {
+        $sqlstr = "SELECT price 
+                FROM pizza_size_mapping 
+                WHERE pizza_id = :pizza_id AND size_id = :size_id;";
+                
+        return self::obtenerUnRegistro($sqlstr, [
+            "pizza_id" => $pizzaId,
+            "size_id" => $sizeId
+        ]);
+    }
+
+
 }

@@ -129,7 +129,7 @@
 
     <!-- Add to Order Button -->
     <div class="card__footer" style="padding: 16px; margin-top: auto;">
-      <a href="index.php?page=Gallery-PizzaDetails&mode=DSP&id={{id}}" style="
+      <a href="index.php?page=Gallery-PizzaDetails&id={{id}}" style="
         display: block;
         background-color: #e74c3c;
         color: #ffffff;

@@ -32,18 +32,22 @@ class Carretilla extends PublicController
             }
             exit;
         }
+        $userId = \Utilities\Security::getUserId();
+        if ($userId > 0) {
+            $carretillaDao = CarretillaDao::getCartByUserCod($userId);
+            $viewCarretilla = [];
+            if ($carretillaDao) {
+                $viewCarretilla[] = $carretillaDao;
+            }
+            $viewData = [
+                'carretilla' => $viewCarretilla
+            ];
 
-        $carretillaDao = CarretillaDao::getCartByUserCod(1);
-        $viewCarretilla = [];
-        if ($carretillaDao) {
-            $viewCarretilla[] = $carretillaDao;
+            $this->loadCartItems2($viewData);
+            Renderer::render('carretilla/carretilla', $viewData);
+        } else {
+            \Utilities\Site::redirectTo("index.php?page=Sec_Login");
         }
-        $viewData = [
-            'carretilla' => $viewCarretilla
-        ];
-
-        $this->loadCartItems2($viewData);
-        Renderer::render('carretilla/carretilla', $viewData);
     }
 
     private function loadCartItems2(array &$viewData): void

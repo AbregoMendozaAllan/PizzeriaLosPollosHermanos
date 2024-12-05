@@ -18,6 +18,9 @@ class Gallery extends PublicController
         $viewData = [
             'pizzas' => $viewPizzas
         ];
+        echo '<pre>';
+        print_r($_POST);
+        echo '</pre>';
         Renderer::render('gallery/gallery', $viewData);
     }
 }
