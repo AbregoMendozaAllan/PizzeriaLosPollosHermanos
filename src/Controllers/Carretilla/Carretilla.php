@@ -20,15 +20,12 @@ class Carretilla extends PublicController
         }
 
         $carretillaDao = CarretillaDao::getCartByUserCod(1);
-        $viewCarretilla = [];
-        if ($carretillaDao) {
-            $viewCarretilla[] = $carretillaDao;
+        if (!empty($carretillaDao)) {
+            $this->viewData['carretilla'] = $carretillaDao;
         }
-        $this->viewData = [
-            'carretilla' => $viewCarretilla
-        ];
 
         $this->loadCartItems2($this->viewData);
+
         Renderer::render('carretilla/carretilla', $this->viewData);
     }
 
@@ -47,13 +44,9 @@ class Carretilla extends PublicController
     {
         if (!empty($viewData['carretilla'])) {
             $cart = $viewData['carretilla'][0];
-            if (isset($cart['cart_id'])) {
-                $cartId = $cart['cart_id'];
-                $cartItems = CarretillaDao::getCartItems($cartId);
-                $viewData['cartItems'] = $cartItems;
-            } else {
-                $viewData['cartItems'] = [];
-            }
+            $cartId = $cart['cart_id'];
+            $cartItems = CarretillaDao::getCartItems($cartId);
+            $viewData['cartItems'] = $cartItems;
         } else {
             $viewData['cartItems'] = [];
         }
