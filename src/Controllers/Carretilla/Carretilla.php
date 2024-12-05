@@ -1,64 +1,59 @@
 <?php
 namespace Controllers\Carretilla;
 
-use Controllers\PrivateController;
 use Controllers\PublicController;
 use Views\Renderer;
 use Dao\Carretilla\Carretilla as CarretillaDao;
 
-class Carretilla extends PrivateController
+class Carretilla extends PublicController
 {
-    
+    private $viewData = [];
+
     public function run(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            header('Content-Type: application/json');
-            try {
-                if (isset($_POST['action'])) {
-                    if ($_POST['action'] === 'delete' && isset($_POST['item_id'])) {
-                        $itemId = $_POST['item_id'];
-                        $result = CarretillaDao::deleteCartItem($itemId);
-                        echo json_encode(['success' => $result]);
-                    } elseif ($_POST['action'] === 'update' && isset($_POST['item_id'], $_POST['quantity'], $_POST['price'])) {
-                        $itemId = $_POST['item_id'];
-                        $quantity = $_POST['quantity'];
-                        $price = $_POST['price'];
-                        $result = CarretillaDao::updateCartItem($itemId, $quantity, $price);
-                        echo json_encode(['success' => $result]);
-                    }
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Acción no especificada']);
-                }
-            } catch (\Exception $e) {
-                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-            }
-            exit;
+        if ($this->isPostBack()) {
+            $postData = $_POST;
+            $this->updateCartItems($postData);
+            echo '<pre>';
+            print_r($postData);
+            echo '</pre>';
         }
-        $userId = \Utilities\Security::getUserId();
 
+        $carretillaDao = CarretillaDao::getCartByUserCod(1);
+        $viewCarretilla = [];
+        if ($carretillaDao) {
+            $viewCarretilla[] = $carretillaDao;
+        }
+        $this->viewData = [
+            'carretilla' => $viewCarretilla
+        ];
 
-        if ($userId = 0) {
-            $carretillaDao = CarretillaDao::getCartByUserCod(1);
-            $viewCarretilla = [];
-            if ($carretillaDao) {
-                $viewCarretilla[] = $carretillaDao;
+        $this->loadCartItems2($this->viewData);
+        Renderer::render('carretilla/carretilla', $this->viewData);
+    }
+
+    private function updateCartItems($postData)
+    {
+        if (isset($postData['cart_items']) && is_array($postData['cart_items'])) {
+            foreach ($postData['cart_items'] as $item) {
+                if (isset($item['item_id'], $item['quantity'], $item['price'])) {
+                    CarretillaDao::updateCartItem($item['item_id'], $item['quantity'], $item['price']);
+                }
             }
-            $viewData = [
-                'carretilla' => $viewCarretilla
-            ];
-
-            $this->loadCartItems2($viewData);
-            Renderer::render('carretilla/carretilla', $viewData);
-        } 
+        }
     }
 
     private function loadCartItems2(array &$viewData): void
     {
         if (!empty($viewData['carretilla'])) {
             $cart = $viewData['carretilla'][0];
-            $cartId = $cart['cart_id'];
-            $cartItems = CarretillaDao::getCartItems($cartId);
-            $viewData['cartItems'] = $cartItems;
+            if (isset($cart['cart_id'])) {
+                $cartId = $cart['cart_id'];
+                $cartItems = CarretillaDao::getCartItems($cartId);
+                $viewData['cartItems'] = $cartItems;
+            } else {
+                $viewData['cartItems'] = [];
+            }
         } else {
             $viewData['cartItems'] = [];
         }
