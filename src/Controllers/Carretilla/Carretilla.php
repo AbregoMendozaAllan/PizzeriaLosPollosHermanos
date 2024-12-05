@@ -6,12 +6,16 @@ use Controllers\PublicController;
 use Views\Renderer;
 use Dao\Carretilla\Carretilla as CarretillaDao;
 
-class Carretilla extends PrivateController
+class Carretilla extends PublicController
 {
     
     public function run(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $postData = $_POST;
+            echo '<pre>';
+            print_r($this->$postData);
+            echo '</pre>';
             header('Content-Type: application/json');
             try {
                 if (isset($_POST['action'])) {
@@ -34,8 +38,8 @@ class Carretilla extends PrivateController
             }
             exit;
         }
-        $userId = \Utilities\Security::getUserId();
-        $carretillaDao = CarretillaDao::getCartByUserCod($userId);
+        //$userId = \Utilities\Security::getUserId();
+        $carretillaDao = CarretillaDao::getCartByUserCod(1);
         $viewCarretilla = [];
         if ($carretillaDao) {
             $viewCarretilla[] = $carretillaDao;
