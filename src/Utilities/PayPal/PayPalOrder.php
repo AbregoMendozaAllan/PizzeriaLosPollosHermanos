@@ -72,7 +72,7 @@ class PayPalOrder
         $newItem = $this->_itemTemplate;
         $newItem["name"] = $name;
         $newItem["description"] = $description;
-        $newItem["sku"] = $sku;
+        $newItem["pizza_id,size_id"] = $sku;
         $newItem["unit_amount"]["value"] = (string) $price;
         $newItem["tax"]["value"] = (string) $tax;
         $newItem["quantity"] = (string) $quantity;

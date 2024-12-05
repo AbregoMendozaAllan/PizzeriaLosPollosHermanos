@@ -1,3 +1,3 @@
-<form action="index.php?page=checkout_checkout" method="post">
+<form action="index.php?page=Checkout_Checkout" method="post">
   <button type="submit">Place Order</button>
 </form>
