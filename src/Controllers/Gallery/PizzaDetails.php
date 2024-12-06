@@ -48,8 +48,6 @@ class pizzaDetails extends PrivateController {
         $this->viewData["pizza"] = $this->pizza;
         $this->viewData["pizzaSizes"] = $this->pizzaSizes;
         $this->viewData["quantity"] = $this->quantity;
-
-        
     }
     private function loadCartData($postData)
     {
