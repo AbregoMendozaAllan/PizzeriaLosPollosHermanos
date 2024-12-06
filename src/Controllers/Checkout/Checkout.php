@@ -14,8 +14,8 @@ class Checkout extends PrivateController
         if ($this->isPostBack()) {
             $PayPalOrder = new \Utilities\Paypal\PayPalOrder(
                 "id" . (time() - 10000000),
-                "http://localhost:8080/nw/PizzeriaLosPollosHermanos/index.php?page=Checkout_Error",
-                "http://localhost:8080/nw/PizzeriaLosPollosHermanos/index.php?page=Checkout_Accept"
+                "http://localhost/nw/PizzeriaLosPollosHermanos/index.php?page=Checkout_Error",
+                "http://localhost/nw/PizzeriaLosPollosHermanos/index.php?page=Checkout_Accept"
             );
 
             // Cargar los items del carrito

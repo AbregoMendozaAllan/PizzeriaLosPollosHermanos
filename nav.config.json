@@ -14,17 +14,17 @@
       "id": "Menu_Gallery",
       "nav_url": "index.php?page=Gallery_Gallery",
       "nav_label":"<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Galeria"
+    },
+    {
+      "id":"Menu_Carretilla",
+      "nav_url": "index.php?page=Carretilla_Carretilla",
+      "nav_label": "Carretilla de Compra"
     }
   ],
   "private": [
     {
       "id":"Menu_PaymentCheckout",
       "nav_url": "index.php?page=Checkout_Checkout",
-      "nav_label": "Carretilla de Compra"
-    },
-    {
-      "id":"Menu_Carretilla",
-      "nav_url": "index.php?page=Carretilla_Carretilla",
       "nav_label": "Carretilla de Compra"
     }
   ]
