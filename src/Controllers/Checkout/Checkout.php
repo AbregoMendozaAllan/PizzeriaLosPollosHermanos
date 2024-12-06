@@ -5,28 +5,28 @@ namespace Controllers\Checkout;
 use Controllers\PrivateController;
 use Controllers\PublicController;
 
-class Checkout extends PrivateController
+class Checkout extends PublicController
 {
     public function run(): void
     {
         $viewData = [];
-
+        
+        $paypalItems = $this->loadPayPalItems();
+   
         if ($this->isPostBack()) {
             $PayPalOrder = new \Utilities\Paypal\PayPalOrder(
                 "id" . (time() - 10000000),
-                "http://localhost:8080/nw/PizzeriaLosPollosHermanos/index.php?page=Checkout_Error",
-                "http://localhost:8080/nw/PizzeriaLosPollosHermanos/index.php?page=Checkout_Accept"
+                "http://localhost/nw/PizzeriaLosPollosHermanos/index.php?page=Checkout_Error",
+                "http://localhost/nw/PizzeriaLosPollosHermanos/index.php?page=Checkout_Accept"
             );
 
-            // Cargar los items del carrito
-            $paypalItems = $this->loadPayPalItems();
 
             // Agregar cada item al pedido de PayPal
             foreach ($paypalItems as $item) {
                 $PayPalOrder->addItem(
                     $item['name'],
                     $item['description'],
-                    $item['pizza_id,size_id'],
+                    $item['sku'],
                     $item['price'],
                     $item['tax'],
                     $item['quantity'],
@@ -58,24 +58,23 @@ class Checkout extends PrivateController
         // Obtener el carrito del usuario desde la sesión o cualquier fuente confiable
         $cartId = $_SESSION['cart_id'] ?? null;
 
-        if (!$cartId) {
+       /* if (!$cartId) {
             return []; // Retornar vacío si no hay un carrito en la sesión
-        }
+        }*/
 
         // Obtener todos los items del carrito desde el DAO
-        $cartItems = \Dao\Carretilla\Carretilla::getCartItems($cartId);
-
+        $cartItems = \Dao\Carretilla\Carretilla::getPasarelaItems(1);
         // Formatear los items para el pedido de PayPal
         $paypalItems = [];
         foreach ($cartItems as $item) {
             $paypalItems[] = [
                 'name' => $item['pizza_name'],
                 'description' => $item['description'] ?? '',
-                'sku' => $item['pizza_id'] . ',' . $item['size_id'],
+                'sku' => $item['pizza_id'] . ',' . $item['id'],
                 'price' => $item['price'],
                 'tax' => $item['price'] * 0.15, // Asumiendo que el 15% es el impuesto
-                'quantity' => $item['quantity'],
-                'category' => 'pizza'
+                'quantity' => $item['quantity'], 
+                'category' => "Pizza" 
             ];
         }
 
