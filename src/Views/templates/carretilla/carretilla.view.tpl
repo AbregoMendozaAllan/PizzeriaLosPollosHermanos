@@ -1,52 +1,57 @@
-<ul class="carrito-detalles">
-  <li class="carrito-item encabezado">
-    <span class="pizza-nombre">Pizza</span>
-    <span class="pizza-tamano">Tamaño</span>
-    <span class="pizza-cantidad">Cantidad</span>
-    <span class="pizza-precio">Precio</span>
-  </li>
-  <!-- Aquí se llenará dinámicamente la lista de items -->
-  {{foreach cartItems}}
-    <li class="carrito-item" data-item-id="{{item_id}}">
-      <div class="item-info">
-        <span class="pizza-nombre">{{pizza_name}}</span>
-        <span class="pizza-tamano">{{size}}</span>
-        <div class="cantidad-controles">
-          <button class="btn-restar" data-item="{{item_id}}" data-precio="{{price}}">-</button>
-          <span class="pizza-cantidad" id="cantidad-{{item_id}}">1</span>
-          <button class="btn-sumar" data-item="{{item_id}}" data-precio="{{price}}">+</button>
-        </div>
-        <span class="pizza-precio">L. <span class="precio-unitario" data-precio="{{price}}">{{price}}</span></span>
-      </div>
+<form method="POST" action="index.php?page=Carretilla_Carretilla">
+  <ul class="carrito-detalles">
+    <li class="carrito-item encabezado">
+      <span class="pizza-nombre">Pizza</span>
+      <span class="pizza-tamano">Tamaño</span>
+      <span class="pizza-cantidad">Cantidad</span>
+      <span class="pizza-precio">Precio</span>
     </li>
-  {{endfor cartItems}}
-</ul>
+    <!-- Aquí se llenará dinámicamente la lista de items -->
+    {{foreach cartItems}}
+      <li class="carrito-item" data-item-id="{{item_id}}">
+        <div class="item-info">
+          <span class="pizza-nombre">{{pizza_name}}</span>
+          <span class="pizza-tamano">{{size}}</span>
+          <div class="cantidad-controles">
+            <button class="btn-restar" type="button" data-item="{{item_id}}" data-precio="{{price}}">-</button>
+            <span class="pizza-cantidad" id="cantidad-{{item_id}}">{{quantity}}</span>
+            <button class="btn-sumar" type="button" data-item="{{item_id}}" data-precio="{{price}}">+</button>
+          </div>
+          <span class="pizza-precio">L. <span class="precio-unitario" data-precio="{{price}}">{{price}}</span></span>
+        </div>
+        <input type="hidden" name="cart_items[{{item_id}}][item_id]" value="{{item_id}}">
+        <input type="hidden" name="cart_items[{{item_id}}][quantity]" id="hidden-quantity-{{item_id}}" value="{{quantity}}">
+        <input type="hidden" name="cart_items[{{item_id}}][price]" value="{{price}}">
+      </li>
+    {{endfor cartItems}}
+  </ul>
 
-<div class="carrito-resumen">
-  <div class="subtotal">
-    <strong>Subtotal:</strong> L. <span id="subtotal">0.00</span>
+  <div class="carrito-resumen">
+    <div class="subtotal">
+      <strong>Subtotal:</strong> L. <span id="subtotal">0.00</span>
+    </div>
+    <div class="impuesto">
+      <strong>Impuesto:</strong> L. <span id="impuesto">0.00</span>
+    </div>
+    <div class="flete">
+      <strong>Flete:</strong> L. <span id="flete">0.00</span>
+    </div>
+    <div class="descuento">
+      <strong>Descuento:</strong> L. <span id="descuento">0.00</span>
+    </div>
+    <div class="cupon">
+      <strong>Cupón:</strong> L. <span id="cupon">0.00</span>
+    </div>
+    <div class="total-precio">
+      <strong>TOTAL:</strong> L. <span id="precio-total">0.00</span>
+    </div>
   </div>
-  <div class="impuesto">
-    <strong>Impuesto:</strong> L. <span id="impuesto">0.00</span>
-  </div>
-  <div class="flete">
-    <strong>Flete:</strong> L. <span id="flete">0.00</span>
-  </div>
-  <div class="descuento">
-    <strong>Descuento:</strong> L. <span id="descuento">0.00</span>
-  </div>
-  <div class="cupon">
-    <strong>Cupón:</strong> L. <span id="cupon">0.00</span>
-  </div>
-  <div class="total-precio">
-    <strong>TOTAL:</strong> L. <span id="precio-total">0.00</span>
-  </div>
-</div>
 
-<button class="Btn">
-  Pagar
-  <svg class="svgIcon" viewBox="0 0 576 512"><path d="M512 80c8.8 0 16 7.2 16 16v32H48V96c0-8.8 7.2-16 16-16H512zm16 144V416c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V224H528zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm56 304c-13.3 0-24 10.7-24 24s10.7 24 24 24h48c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm128 0c-13.3 0-24 10.7-24 24s10.7 24 24 24H360c13.3 0 24-10.7 24-24s-10.7-24-24-24H248z"></path></svg>
-</button>
+  <button type="submit" class="Btn">
+    Pagar
+    <svg class="svgIcon" viewBox="0 0 576 512"><path d="M512 80c8.8 0 16 7.2 16 16v32H48V96c0-8.8 7.2-16 16-16H512zm16 144V416c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V224H528zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm56 304c-13.3 0-24 10.7-24 24s10.7 24 24 24h48c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm128 0c-13.3 0-24 10.7-24 24s10.7 24 24 24H360c13.3 0 24-10.7 24-24s-10.7-24-24-24H248z"></path></svg>
+  </button>
+</form>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -54,9 +59,9 @@
       const carritoItems = document.querySelectorAll('.carrito-item');
       let subtotal = 0;
       let impuesto = 0;
-      let flete = 0; 
-      let descuento = 0; 
-      let cupon = 0; 
+      let flete = 0;
+      let descuento = 0;
+      let cupon = 0;
 
       carritoItems.forEach(item => {
         const cantidadElement = item.querySelector('.pizza-cantidad');
@@ -86,60 +91,36 @@
       document.getElementById('precio-total').textContent = total.toFixed(2);
     };
 
-    const btnPagar = document.querySelector('.Btn');
-    if (btnPagar) {
-      btnPagar.addEventListener('click', () => {
-        const carritoItems = document.querySelectorAll('.carrito-item');
-        carritoItems.forEach(item => {
-          const itemId = item.getAttribute('data-item-id');
-          const cantidadElement = item.querySelector(`#cantidad-${itemId}`);
-          const precioElement = item.querySelector('.precio-unitario');
+    document.querySelectorAll('.carrito-item').forEach(item => {
+      const itemId = item.getAttribute('data-item-id');
+      const btnSumar = item.querySelector(`.btn-sumar[data-item="${itemId}"]`);
+      const btnRestar = item.querySelector(`.btn-restar[data-item="${itemId}"]`);
+      const cantidadElement = item.querySelector(`#cantidad-${itemId}`);
+      const hiddenQuantityElement = document.getElementById(`hidden-quantity-${itemId}`);
 
-          if (cantidadElement && precioElement) {
-            const cantidad = parseInt(cantidadElement.textContent);
-            const precio = parseFloat(precioElement.getAttribute('data-precio'));
+      if (btnSumar && btnRestar && cantidadElement) {
+        btnSumar.addEventListener('click', () => {
+          let cantidad = parseInt(cantidadElement.textContent);
+          cantidad++;
+          cantidadElement.textContent = cantidad;
+          hiddenQuantityElement.value = cantidad;
+          actualizarTotal();
+        });
 
-            if (!isNaN(cantidad) && !isNaN(precio)) {
-             
-              actualizarCantidad(itemId, cantidad, precio);
+        btnRestar.addEventListener('click', () => {
+          let cantidad = parseInt(cantidadElement.textContent);
+          if (cantidad > 0) {
+            cantidad--;
+            cantidadElement.textContent = cantidad;
+            hiddenQuantityElement.value = cantidad;
+            if (cantidad === 0) {
+              eliminarItem(itemId, item);
             }
+            actualizarTotal();
           }
         });
-      });
-    }
-
-    const actualizarCantidad = (itemId, quantity, price) => {
-      fetch(window.location.href, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-          'action': 'update',
-          'item_id': itemId,
-          'quantity': quantity,
-          'price': price
-        })
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (!data.success) {
-          alert('Error al actualizar el item: ' + data.message);
-        } else {
-          
-          location.reload();
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Ocurrió un error al procesar la solicitud: ' + error.message);
-      });
-    };
+      }
+    });
 
     const eliminarItem = (itemId, itemElement) => {
       fetch(window.location.href, {
@@ -160,7 +141,8 @@
       })
       .then(data => {
         if (data.success) {
-          location.reload();
+          itemElement.remove();
+          actualizarTotal();
         } else {
           alert('Error al eliminar el item: ' + data.message);
         }
@@ -171,62 +153,31 @@
       });
     };
 
-    document.querySelectorAll('.carrito-item').forEach(item => {
-      const itemId = item.getAttribute('data-item-id');
-      const btnSumar = item.querySelector(`.btn-sumar[data-item="${itemId}"]`);
-      const btnRestar = item.querySelector(`.btn-restar[data-item="${itemId}"]`);
-      const cantidadElement = item.querySelector(`#cantidad-${itemId}`);
-
-      if (btnSumar && btnRestar && cantidadElement) {
-        btnSumar.addEventListener('click', () => {
-          let cantidad = parseInt(cantidadElement.textContent);
-          cantidad++;
-          cantidadElement.textContent = cantidad;
-          actualizarTotal();
-        });
-
-        btnRestar.addEventListener('click', () => {
-          let cantidad = parseInt(cantidadElement.textContent);
-          if (cantidad > 0) {
-            cantidad--;
-            cantidadElement.textContent = cantidad;
-            if (cantidad === 0) {
-              eliminarItem(itemId, item);
-            } else {
-              actualizarTotal();
-            }
-          }
-        });
-      }
-    });
-
     actualizarTotal();
   });
 </script>
 
 
-
 <style>
-
-body {
+  body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f3f4f6;
     color: #333;
-}
+  }
 
-.carrito-container {
+  .carrito-container {
     position: relative;
-}
+  }
 
-.carrito-detalles {
+  .carrito-detalles {
     list-style: none;
     padding: 0;
     margin: 0;
-}
+  }
 
-.carrito-item {
+  .carrito-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -235,85 +186,86 @@ body {
     color: #555;
     border-bottom: 1px solid #ddd;
     padding: 10px 0;
-}
+  }
 
-.carrito-item.encabezado {
+  .carrito-item.encabezado {
     font-weight: bold;
     background-color: #f1f1f1;
     padding: 12px 0;
     text-align: center;
-}
+  }
 
-.item-info {
+  .item-info {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-}
+  }
 
-.pizza-nombre, .pizza-tamano {
+  .pizza-nombre,
+  .pizza-tamano {
     font-weight: bold;
-}
+  }
 
-.cantidad-controles {
+  .cantidad-controles {
     display: flex;
     gap: 10px;
     align-items: center;
-}
+  }
 
-.cantidad-controles button {
+  .cantidad-controles button {
     background-color: #f82a2a;
     color: white;
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-}
+  }
 
-.pizza-precio {
+  .pizza-precio {
     font-size: 14px;
     font-weight: bold;
     margin-left: 10px;
     color: #333;
-}
+  }
 
-.total-precio {
+  .total-precio {
     margin-top: 10px;
     font-size: 16px;
     text-align: right;
-}
+  }
 
-.cupon {
+  .cupon {
     margin-top: 10px;
     font-size: 16px;
     text-align: right;
-}
+  }
 
-.descuento {
+  .descuento {
     margin-top: 10px;
     font-size: 16px;
     text-align: right;
-}
+  }
 
-.flete {
+  .flete {
     margin-top: 10px;
     font-size: 16px;
     text-align: right;
-}
+  }
 
-.subtotal {
+  .subtotal {
     margin-top: 10px;
     font-size: 16px;
     text-align: right;
-}
+  }
 
-.impuesto {
+  .impuesto {
     margin-top: 10px;
     font-size: 16px;
     text-align: right;
-}
+  }
 
-.Btn {
+  .Btn {
     width: 130px;
     height: 40px;
     display: flex;
@@ -329,17 +281,17 @@ body {
     position: relative;
     overflow: hidden;
     transition-duration: .3s;
-}
+  }
 
-.svgIcon {
+  .svgIcon {
     width: 16px;
-}
+  }
 
-.svgIcon path {
+  .svgIcon path {
     fill: white;
-}
+  }
 
-.Btn::before {
+  .Btn::before {
     width: 130px;
     height: 130px;
     position: absolute;
@@ -350,18 +302,16 @@ body {
     top: 0;
     transition-duration: .3s;
     mix-blend-mode: difference;
-}
+  }
 
-.Btn:hover::before {
+  .Btn:hover::before {
     transition-duration: .3s;
     transform: translate(100%, -50%);
     border-radius: 0;
-}
+  }
 
-.Btn:active {
+  .Btn:active {
     transform: translate(5px, 5px);
     transition-duration: .3s;
-}
+  }
 </style>
-
-

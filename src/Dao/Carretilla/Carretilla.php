@@ -50,6 +50,21 @@ class Carretilla extends Table
                   WHERE c.cart_id = :cart_id;";
         return self::obtenerRegistros($sqlstr, ["cart_id" => $cartId]);
     }
+    public static function getPasarelaItems($cartId)
+{
+    $sqlstr = "SELECT   p.pizza_name,
+    p.description,
+    c.pizza_id, s.id,
+    c.price,
+    c.price * 0.15 AS tax,
+    c.quantity
+                  FROM pizzas as p
+                  INNER JOIN cart_items as c ON c.pizza_id = p.id
+                  INNER JOIN pizza_sizes as s ON c.size_id = s.id
+                  WHERE c.cart_id = :cart_id;";
+        return self::obtenerRegistros($sqlstr, ["cart_id" => $cartId]);
+    return self::obtenerRegistros($sqlstr, ["cart_id" => $cartId]);
+}
 
     //da el parametro del codigo del usuario
     public static function getCartByUserCod($userCod)
