@@ -12,9 +12,7 @@ class Checkout extends PublicController
         $viewData = [];
         
         $paypalItems = $this->loadPayPalItems();
-        echo '<pre>';
-        print_r($paypalItems); 
-        echo '</pre>';
+   
         if ($this->isPostBack()) {
             $PayPalOrder = new \Utilities\Paypal\PayPalOrder(
                 "id" . (time() - 10000000),
@@ -66,9 +64,6 @@ class Checkout extends PublicController
 
         // Obtener todos los items del carrito desde el DAO
         $cartItems = \Dao\Carretilla\Carretilla::getPasarelaItems(1);
-        echo '<pre>';
-        print_r($cartItems); // Sin el operador $this->
-        echo '</pre>';
         // Formatear los items para el pedido de PayPal
         $paypalItems = [];
         foreach ($cartItems as $item) {
